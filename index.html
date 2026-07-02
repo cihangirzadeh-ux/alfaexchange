@@ -25,7 +25,7 @@
     color:var(--text-primary);
     font-family:'Vazirmatn','Inter',sans-serif;
     line-height:1.7;
-    padding-bottom: 60px; /* برای جلوگیری از تداخل دکمه شناور با فوتر */
+    padding-bottom: 60px;
   }
   body.ltr{ direction:ltr; }
   img,svg{ display:block; }
@@ -38,26 +38,28 @@
     border-bottom: 1px solid var(--line);
     overflow: hidden;
     white-space: nowrap;
-    padding: 6px 0;
+    padding: 8px 0;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-muted);
   }
   .ticker-content {
     display: inline-block;
     padding-left: 100%;
     animation: ticker linear infinite;
+    animation-duration: 25s;
   }
   body.ltr .ticker-content {
     padding-left: 0;
     padding-right: 100%;
     animation: ticker-ltr linear infinite;
+    animation-duration: 25s;
   }
   .ticker-item {
     display: inline-block;
     margin-right: 40px;
   }
-  .ticker-item span { color: var(--gold); font-weight: bold; }
+  .ticker-highlight { color: var(--gold); font-weight: bold; }
   .ticker-status { color: var(--tether); font-weight: bold; }
 
   @keyframes ticker {
@@ -336,7 +338,7 @@
     text-align: center;
     margin-top: 24px;
   }
-  .stat-item h5 { font-family:'JetBrains Mono', monospace; font-size: 20px; color: var(--gold); }
+  .stat-item h5 { font-family:'JetBrains Mono', monospace; font-size: 20px; color: var(--gold); direction: ltr; }
   .stat-item p { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
 
   /* SECTIONS */
@@ -380,7 +382,7 @@
   .step h4{ font-size:15px; margin-bottom:6px; }
   .step p{ font-size:13px; color:var(--text-muted); }
 
-  /* FAQ SECTION (ACCORDION) */
+  /* FAQ SECTION */
   .faq-container {
     max-width: 720px;
     margin: 0 auto;
@@ -484,8 +486,7 @@
 <body>
 
 <div class="ticker-wrap">
-  <div class="ticker-content" id="tickerContent">
-    </div>
+  <div class="ticker-content" id="tickerContent"></div>
 </div>
 
 <header>
@@ -559,8 +560,7 @@
       <div class="calc-row">
         <div style="flex:1">
           <label id="deliveryLabel" style="margin-bottom:2px;">نوع دریافت/تحویل</label>
-          <select id="deliverySelect">
-            </select>
+          <select id="deliverySelect"></select>
         </div>
       </div>
 
@@ -569,14 +569,17 @@
     </div>
   </section>
 
-  <div class="stats-counter"> 
+  <div class="stats-counter">
+    <div class="stat-item">
+      <h5>+۵,۰۰۰</h5>
+      <p data-i18n="stat_1">تراکنش موفق سالانه</p>
     </div>
     <div class="stat-item">
       <h5>۲۴/۷</h5>
       <p data-i18n="stat_2">پشتیبانی و هماهنگی</p>
     </div>
     <div class="stat-item">
-      <h5>&lt; 60 دقیقه</h5>
+      <h5>15 ~ 60 Min</h5>
       <p data-i18n="stat_3">میانگین زمان تسویه</p>
     </div>
   </div>
@@ -642,7 +645,7 @@
     <div class="faq-container">
       <div class="faq-item">
         <div class="faq-question" data-i18n="q1">انتقال و تسویه حواله‌ها چقدر زمان می‌برد؟</div>
-        <div class="faq-answer" data-i18n="a1">حواله‌های لیر و تتر معمولاً بین 45 الی 90 دقیقه تسویه می‌شوند. حواله‌های بین‌المللی مانند سوئیفت وابسته به سیستم بانکی مقصد بین ۱ الی ۳ روز کاری زمان خواهند برد.</div>
+        <div class="faq-answer" data-i18n="a1">حواله‌های لیر و تتر معمولاً بین ۱۵ الی ۶۰ دقیقه تسویه می‌شوند. حواله‌های بین‌المللی مانند سوئیفت وابسته به سیستم بانکی مقصد بین ۱ الی ۳ روز کاری زمان خواهند برد.</div>
       </div>
       <div class="faq-item">
         <div class="faq-question" data-i18n="q2">آیا برای انجام تراکنش نیاز به احراز هویت است؟</div>
@@ -650,7 +653,7 @@
       </div>
       <div class="faq-item">
         <div class="faq-question" data-i18n="q3">چگونه می‌توانم از نرخ دقیق و نهایی مطلع شوم؟</div>
-        <div class="faq-answer" data-i18n="a3">کافیست مبلغ مورد نظر خود را در ماشین‌حساب بالا وارد کرده و دکمه ادامه در واتس‌اپ را بزنید تا نرخ لحظه‌ای بازار مابین ثانیه‌ها برای شما فیکس و ارسال شود.</div>
+        <div class="faq-answer" data-i18n="a3">کافیست مبلغ مورد نظر خود را در ماشین‌حساب بالا وارد کرده و دکمه ادامه در واتس‌اپ را بزنید تا نرخ لحظه‌ای بازار برای شما فیکس و ارسال شود.</div>
       </div>
     </div>
   </section>
@@ -721,7 +724,6 @@ const translations = {
     desc_usdt: 'نقد کردن تتر یا خرید فوری تتر بر پایه لیر ترکیه با تسویه بانکی آنی و بدون واسطه.',
     desc_eu: 'ارسال حواله‌های بانکی یورو به کشورهای حوزه اتحادیه اروپا (SEPA) در کوتاه‌ترین زمان.',
     
-    // فیلدهای جدید
     delivery_label: 'نوع دریافت/تحویل',
     del_bank: 'واریز بانکی (حساب به حساب)',
     del_cash: 'تحویل نقدی حضوری (دفتر استانبول)',
@@ -732,13 +734,13 @@ const translations = {
     faq_eyebrow: 'اطلاعات',
     faq_title: 'سوالات متداول',
     q1: 'انتقال و تسویه حواله‌ها چقدر زمان می‌برد؟',
-    a1: 'حواله‌های لیر و تتر معمولاً بین 45 الی 90 دقیقه تسویه می‌شوند. حواله‌های بین‌المللی مانند سوئیفت وابسته به سیستم بانکی مقصد بین ۱ الی ۳ روز کاری زمان خواهند برد.',
+    a1: 'حواله‌های لیر و تتر معمولاً بین ۱۵ الی ۶۰ دقیقه تسویه می‌شوند. حواله‌های بین‌المللی مانند سوئیفت وابسته به سیستم بانکی مقصد بین ۱ الی ۳ روز کاری زمان خواهند برد.',
     q2: 'آیا برای انجام تراکنش نیاز به احراز هویت است؟',
     a2: 'بله، جهت حفظ امنیت مالی طرفین و پیروی از قوانین ضد پولشویی، برای مبالغ و تراکنش‌های اول، تایید هویت اولیه الزامی است.',
     q3: 'چگونه می‌توانم از نرخ دقیق و نهایی مطلع شوم؟',
     a3: 'کافیست مبلغ مورد نظر خود را در ماشین‌حساب بالا وارد کرده و دکمه ادامه در واتس‌اپ را بزنید تا نرخ لحظه‌ای بازار برای شما فیکس و ارسال شود.',
     floating_wa_text: 'مشاوره سریع در واتس‌اپ',
-    ticker_text: 'وضعیت بازار: <span class="ticker-status">فعال و در حال سرویس‌دهی</span> | زمان تسویه لیر: آنی | نرخ تتر بر اساس حواله روز محاسبه می‌گردد.'
+    ticker_template: (rate) => `وضعیت بازار: <span class="ticker-status">فعال و در حال سرویس‌دهی</span> | نرخ زنده تبدیل لیر به تتر: <span class="ticker-highlight">${rate}</span> | زمان تسویه: ۱۵~۶۰ دقیقه`
   },
   tr: {
     dir: 'ltr',
@@ -795,13 +797,13 @@ const translations = {
     faq_eyebrow: 'Bilgi',
     faq_title: 'Sıkça Sorulan Sorular',
     q1: 'Transfer ve takas işlemleri ne kadar sürer?',
-    a1: 'TL ve Tether işlemleri genellikle 45 ila 90 dakika sürer. SWIFT gibi uluslararası transferler alıcı bankaya bağlı olarak 1-3 iş günü sürebilir.',
+    a1: 'TL ve Tether işlemleri genellikle 15 ila 60 dakika sürer. SWIFT gibi uluslararası transferler alıcı bankaya bağlı olarak 1-3 iş günü sürebilir.',
     q2: 'İşlem yapmak için kimlik doğrulaması gerekli mi?',
     a2: 'Evet, güvenliği sağlamak ve kara para aklamayı önleme yasalarına uymak adına ilk işlemler için temel kimlik doğrulaması zorunludur.',
     q3: 'Güncel kuru en kesin nasıl öğrenebilirim?',
     a3: 'Yukarıdaki hesaplayıcıya miktarı girip WhatsApp butonuna basmanız yeterlidir. Anlık piyasa kuru sizin için rezerve edilerek iletilir.',
     floating_wa_text: "WhatsApp'tan Canlı Destek",
-    ticker_text: 'Piyasa Durumu: <span class="ticker-status">Aktif ve Hizmete Hazır</span> | TL Takas: Anında | Tether kuru güncel transfer bazında hesaplanır.'
+    ticker_template: (rate) => `Piyasa Durumu: <span class="ticker-status">Aktif</span> | Canlı TRY/USDT Kuru: <span class="ticker-highlight">${rate}</span> | Hesap Takas Süresi: 15~60 dk`
   },
   en: {
     dir: 'ltr',
@@ -858,13 +860,13 @@ const translations = {
     faq_eyebrow: 'Information',
     faq_title: 'Frequently Asked Questions',
     q1: 'How long do transfers and settlements take?',
-    a1: 'TRY and Tether orders usually settle in 45 to 90 minutes. International bank transfers like SWIFT take 1 to 3 business days depending on the destination.',
+    a1: 'TRY and Tether orders usually settle in 15 to 60 minutes. International bank transfers like SWIFT take 1 to 3 business days depending on the destination.',
     q2: 'Is identity verification required to exchange?',
     a2: 'Yes, to ensure high security and comply with anti-money laundering policies, initial identity confirmation is mandatory for new clients.',
     q3: 'How can I get the exact final exchange rate?',
     a3: 'Simply fill out the amount in the calculator above and click the WhatsApp button. The real-time rate will be locked and sent to you.',
     floating_wa_text: 'Quick Help on WhatsApp',
-    ticker_text: 'Market Status: <span class="ticker-status">Active & Online</span> | TRY Settlement: Instant | Tether rate is calculated based on current daily remittance.'
+    ticker_template: (rate) => `Market Status: <span class="ticker-status">Active & Online</span> | Live TRY/USDT Rate: <span class="ticker-highlight">${rate}</span> | Settlement Speed: 15~60 Mins`
   }
 };
 
@@ -873,7 +875,7 @@ const PAIRS = [
     id:'try_usdt',
     base:{code:'TRY', name:{fa:'لیر',tr:'TL',en:'Lira'}, symbol:'₺', decimals:2},
     quote:{code:'USDT', name:{fa:'تتر',tr:'USDT',en:'Tether'}, symbol:'₮', decimals:2},
-    rate: 1/46.70, 
+    rate: 0.0214, 
     tabLabel:{fa:'لیر ⇄ تتر', tr:'TL ⇄ USDT', en:'TRY ⇄ USDT'}
   },
   {
@@ -934,10 +936,20 @@ async function updateLiveRates() {
         if (pair.id === 'try_usdt') { pair.rate = tryToUsd; }
       });
       recalc('box1');
+      updateTicker();
     }
   } catch (e) {
     console.log("Error fetching live rates:", e);
+    updateTicker();
   }
+}
+
+function updateTicker() {
+  const t = translations[currentLang];
+  const tryUsdtPair = PAIRS.find(p => p.id === 'try_usdt');
+  const rateFormatted = tryUsdtPair ? tryUsdtPair.rate.toFixed(4) : "0.0214";
+  const contentText = t.ticker_template(rateFormatted);
+  tickerContent.innerHTML = (contentText + " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ").repeat(4);
 }
 
 function amountLabel(lang, curName){
@@ -1053,7 +1065,6 @@ document.querySelectorAll('.service-tag').forEach(tag => {
   });
 });
 
-// مدیریت لود آپشن‌های دریافت و تحویل در ماشین‌حساب
 function renderDeliveryOptions() {
   const t = translations[currentLang];
   deliveryLabel.textContent = t['delivery_label'];
@@ -1065,7 +1076,6 @@ function renderDeliveryOptions() {
   `;
 }
 
-// اسکریپت آکاردئون سوالات متداول
 document.querySelectorAll('.faq-question').forEach(item => {
   item.addEventListener('click', () => {
     const parent = item.parentElement;
@@ -1090,20 +1100,19 @@ function setLang(lang){
   });
 
   floatingWaText.textContent = t['floating_wa_text'];
-  tickerContent.innerHTML = (t['ticker_text'] + " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ").repeat(3);
-
+  
   renderPairTabs();
   renderDeliveryOptions();
   renderLabels();
   updateCtaLink();
   updateServiceDetailBox();
+  updateTicker();
 }
 
 document.querySelectorAll('.lang-btn').forEach(b=>{
   b.addEventListener('click', ()=> setLang(b.getAttribute('data-lang')));
 });
 
-// لود اولیه پلتفرم
 setLang('fa');
 updateLiveRates();
 setInterval(updateLiveRates, 300000); 
