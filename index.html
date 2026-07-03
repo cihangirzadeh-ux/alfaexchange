@@ -571,6 +571,7 @@
       <div class="tgju-container-grid">
         <div class="tgju-wrapper">
           <tgju
+              id="widget-tgju-1"
               type="market-overview"
               items="137225,137207,137221,137222,137218"
               columns="dot"
@@ -579,6 +580,7 @@
         </div>
         <div class="tgju-wrapper">
           <tgju
+              id="widget-tgju-2"
               type="market-overview"
               items="398097,398096,535605,398115,398102"
               columns="dot"
@@ -672,7 +674,7 @@
         <div class="faq-answer" data-i18n="a2">بله، جهت حفظ امنیت مالی طرفین و پیروی از قوانین ضد پولشویی، برای مبالغ و تراکنش‌های اول، تایید هویت اولیه الزامی است.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-question" data-i18n="q3">چگونه می‌توانم از نرخ دقیق و نهایی مطلع شوم؟</div>
+        <div class="faq-question" data-i18n="q3">چگونه می‌توانم از نرخ دقیق و نهایی مطلع شوم幕</div>
         <div class="faq-answer" data-i18n="a3">کافیست مبلغ مورد نظر خود را در ماشین‌حساب بالا وارد کرده و دکمه ادامه در واتس‌اپ را بزنید تا نرخ لحظه‌ای بازار برای شما فیکس و ارسال شود.</div>
       </div>
     </div>
@@ -801,7 +803,7 @@ const translations = {
     wa_msg: (v1,c1,v2,c2,del)=>`Merhaba, ${v1} ${c1} karşılığında ${v2} ${c2} çevirmek istiyorum. (Teslimat türü: ${del})`,
     ask_btn_text: "WhatsApp'tan Fiyat Sor",
     service_wa_msg: (name)=>`Merhaba, "${name}" işlemi hakkında fiyat bilgisi alabilir miyim?`,
-    desc_swift: 'Dünya çapında en düşük komisyon ve en yüksek hızla uluslararası SWIFT transferleri.',
+    desc_swift: 'Dünya çapında en düşük komisyon and en yüksek hızla uluslararası SWIFT transferleri.',
     desc_usa: 'ABD içi kişisel ve kurumsal hesaplara doğrudan banka havalesi (Wire & ACH) gönderimi.',
     desc_student: 'Yurt dışındaki üniversite harçlarının ve öğrenci giderlerinin güvenli ve doğrudan ödenmesi.',
     desc_currencies: 'Türk Lirası, ABD Doları ve Euro nakit ve havale alım-satım işlemleri.',
@@ -889,6 +891,7 @@ const translations = {
   }
 };
 
+// نرخ‌های پیش‌فرض اولیه (در صورت عدم لود شدن ویجت‌ها، این مقادیر استفاده می‌شوند)
 const PAIRS = [
   {
     id:'try_usdt',
@@ -944,11 +947,98 @@ const deliverySelect = document.getElementById('deliverySelect');
 const deliveryLabel = document.getElementById('deliveryLabel');
 const floatingWaText = document.getElementById('floatingWaText');
 
-async function updateLiveRates() {
+// تابع پیشرفته برای استخراج قیمت‌های زنده از درون المان‌های ابزارک TGJU
+function scrapeTgjuWidgets() {
+  try {
+    // پیدا کردن تمام جدول‌ها یا سطرها داخل المان ابزارک
+    const widgetRows = document.querySelectorAll('tgju table tr, tgju div, iframe');
+    
+    // ۱. استخراج تتر به تومان (بخش اول ابزارک شما: آیتم ۱۳۷۲۲۵)
+    // ۲. استخراج دلار به تومان (بخش اول ابزارک شما: آیتم ۱۳۷۲۰۷)
+    // ۳. استخراج یورو به تومان (بخش اول ابزارک شما: آیتم ۱۳۷۲۲۱)
+    // ۴. استخراج لیر به تومان (بخش دوم ابزارک شما: آیتم ۳۹۸۰۹۶)
+    
+    let livePrices = {
+      usdt_irt: null,
+      usd_irt: null,
+      eur_irt: null,
+      try_irt: null
+    };
+
+    // در ساختارهای داینامیک ویجت، متون را اسکن می‌کنیم
+    const allTextBlocks = Array.from(document.querySelectorAll('tgju, .tgju-wrapper *'));
+    
+    allTextBlocks.forEach(el => {
+      const text = el.textContent || '';
+      
+      // تشخیص قیمت لیر
+      if (text.includes('لیر ترکیه') || text.includes('لیر')) {
+        const num = extractPriceNumber(el.parentElement?.textContent || text);
+        if (num && num > 500) livePrices.try_irt = num;
+      }
+      // تشخیص قیمت دلار
+      if (text.includes('دلار آمریکا') || (text.includes('دلار') && !text.includes('کانادا') && !text.includes('استرالیا'))) {
+        const num = extractPriceNumber(el.parentElement?.textContent || text);
+        if (num && num > 10000) livePrices.usd_irt = num;
+      }
+      // تشخیص قیمت یورو
+      if (text.includes('یورو')) {
+        const num = extractPriceNumber(el.parentElement?.textContent || text);
+        if (num && num > 10000) livePrices.eur_irt = num;
+      }
+      // تشخیص قیمت تتر
+      if (text.includes('تتر') || text.includes('USDT')) {
+        const num = extractPriceNumber(el.parentElement?.textContent || text);
+        if (num && num > 10000) livePrices.usdt_irt = num;
+      }
+    });
+
+    // به روز رسانی آرایه جفت‌ارزها بر اساس دیتای زنده اسکرپ شده
+    PAIRS.forEach(pair => {
+      if (pair.id === 'try_irt' && livePrices.try_irt) {
+        pair.rate = livePrices.try_irt;
+      }
+      if (pair.id === 'usd_irt' && livePrices.usd_irt) {
+        pair.rate = livePrices.usd_irt;
+      }
+      if (pair.id === 'eur_irt' && livePrices.eur_irt) {
+        pair.rate = livePrices.eur_irt;
+      }
+      // برای جفت‌ارز لیر به تتر، محاسبه نرخ مستقیم با تقسیم (لیر تقسیم بر تتر)
+      if (pair.id === 'try_usdt' && livePrices.try_irt && livePrices.usdt_irt) {
+        pair.rate = livePrices.try_irt / livePrices.usdt_irt;
+      }
+    });
+
+    recalc('box1');
+  } catch (err) {
+    console.log("Error binding calculator to widget data:", err);
+  }
+}
+
+// ابزار کمکی برای پاکسازی متون عددی فارسی/لاتین داخل ویجت
+function extractPriceNumber(str) {
+  // تبدیل اعداد فارسی به انگلیسی
+  const p2e = s => s.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+  const cleanStr = p2e(str).replace(/,/g, '');
+  const match = cleanStr.match(/\d+/);
+  return match ? parseInt(match[0], 10) : null;
+}
+
+// گوش به زنگ بودن لود شدن کامل آیتم‌های ابزارک
+window.addEventListener('load', () => {
+  // اجرای اولیه با کمی تاخیر تا ابزارک‌ها کاملاً رندر و دیتای متنی اضافه شود
+  setTimeout(scrapeTgjuWidgets, 2500);
+  
+  // بررسی مداوم تغییرات ابزارک جهت همگام‌سازی ماشین‌حساب (هر ۱۰ ثانیه)
+  setInterval(scrapeTgjuWidgets, 10000);
+});
+
+async function updateLiveRatesFallback() {
   try {
     const response = await fetch('https://open.er-api.com/v6/latest/TRY');
     const data = await response.json();
-    if (data && data.rates) {
+    if (data && data.rates && !PAIRS[0].rate) {
       const tryToUsd = data.rates.USD;
       PAIRS.forEach(pair => {
         if (pair.id === 'try_usdt') { pair.rate = tryToUsd; }
@@ -956,7 +1046,7 @@ async function updateLiveRates() {
       recalc('box1');
     }
   } catch (e) {
-    console.log("Error fetching live rates:", e);
+    console.log("Fallback api error:", e);
   }
 }
 
@@ -1000,7 +1090,6 @@ function renderLabels(){
   box2Cur.textContent = c2.symbol;
 }
 
-// تابع بهینه‌شده برای جلوگیری از تداخل کاما و محاسبات جفت‌ارزهای معکوس و تومانی
 function recalc(source){
   const pair = currentPair();
   const rate = pair.rate; 
@@ -1134,8 +1223,7 @@ document.querySelectorAll('.lang-btn').forEach(b=>{
 });
 
 setLang('fa');
-updateLiveRates();
-setInterval(updateLiveRates, 300000); 
+updateLiveRatesFallback();
 recalc('box1');
 </script>
 </body>
