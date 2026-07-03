@@ -32,26 +32,6 @@
   a{ text-decoration:none; color:inherit; }
   .wrap{ max-width:1080px; margin:0 auto; padding-inline:24px; }
 
-  /* MARKET TICKER */
-  .ticker-wrap {
-    background: #0b1116;
-    border-bottom: 1px solid var(--line);
-    padding: 8px 15px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--text-muted);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 40px;
-  }
-  /* تنظیم استایل پاسخگو برای کاستومایز کردن ویجت TGJU */
-  .ticker-wrap tgju {
-    width: 100%;
-    max-width: 1080px;
-    margin: 0 auto;
-  }
-
   /* NAV */
   header{
     position:sticky; top:0; z-index:50;
@@ -161,7 +141,7 @@
     display:grid;
     grid-template-columns:1.1fr 0.9fr;
     gap:48px;
-    align-items:center;
+    align-items:start; /* تغییر به حالت تراز از بالا برای هماهنگی ماشین حساب */
   }
   .eyebrow{
     display:inline-block;
@@ -203,7 +183,12 @@
   .btn-primary{ background:var(--tether); color:#062018; }
   .btn-ghost{ background:transparent; color:var(--text-primary); border-color:var(--line); }
 
-  /* CALCULATOR CARD */
+  /* CALCULATOR CARD & CONTAINER */
+  .calc-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
   .calc-card{
     background:linear-gradient(160deg, var(--bg-panel), var(--bg-panel-2));
     border:1px solid var(--line);
@@ -305,6 +290,16 @@
     background:var(--tether); color:#062018;
     font-weight:700; font-size:14px;
     padding:13px; border-radius:12px;
+  }
+
+  /* TGJU SIDE WIDGET STYLING */
+  .tgju-wrapper {
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    overflow: hidden;
   }
 
   /* SOCIAL PROOF STATS */
@@ -466,16 +461,6 @@
 </head>
 <body>
 
-<div class="ticker-wrap">
-  <!-- قرارگیری کد ویجت قیمت لحظه‌ای TGJU به جای سیستم متنی قدیمی -->
-  <tgju
-      type="market-overview"
-      items="137225,137207,137221,137222,137218"
-      columns="dot"
-      token="webservice"
-  ></tgju>
-</div>
-
 <header>
   <nav class="wrap">
     <div class="brand"><span data-i18n="brand">صرافی آلفا</span></div>
@@ -518,41 +503,54 @@
       </div>
     </div>
 
-    <div class="calc-card" id="calc">
-      <div class="calc-head">
-        <h3 data-i18n="calc_title">ماشین‌حساب تبدیل</h3>
-        <span class="badge" data-i18n="calc_badge">نرخ مرجع</span>
-      </div>
-
-      <div class="pair-tabs" id="pairTabs"></div>
-
-      <div class="calc-row">
-        <div style="flex:1">
-          <label id="box1Label">مبلغ</label>
-          <input id="box1Input" inputmode="decimal" value="1000">
+    <!-- قرارگیری هر دو بخش ماشین حساب و قیمت‌ها در یک ستون عمودی -->
+    <div class="calc-container">
+      <div class="calc-card" id="calc">
+        <div class="calc-head">
+          <h3 data-i18n="calc_title">ماشین‌حساب تبدیل</h3>
+          <span class="badge" data-i18n="calc_badge">نرخ مرجع</span>
         </div>
-        <span class="cur" id="box1Cur">₺</span>
-      </div>
 
-      <div class="swap-btn" id="swapBtn">⇄</div>
+        <div class="pair-tabs" id="pairTabs"></div>
 
-      <div class="calc-row">
-        <div style="flex:1">
-          <label id="box2Label">مبلغ</label>
-          <input id="box2Input" inputmode="decimal" value="21.41">
+        <div class="calc-row">
+          <div style="flex:1">
+            <label id="box1Label">مبلغ</label>
+            <input id="box1Input" inputmode="decimal" value="1000">
+          </div>
+          <span class="cur" id="box1Cur">₺</span>
         </div>
-        <span class="cur" id="box2Cur">₮</span>
-      </div>
 
-      <div class="calc-row">
-        <div style="flex:1">
-          <label id="deliveryLabel" style="margin-bottom:2px;">نوع دریافت/تحویل</label>
-          <select id="deliverySelect"></select>
+        <div class="swap-btn" id="swapBtn">⇄</div>
+
+        <div class="calc-row">
+          <div style="flex:1">
+            <label id="box2Label">مبلغ</label>
+            <input id="box2Input" inputmode="decimal" value="21.41">
+          </div>
+          <span class="cur" id="box2Cur">₮</span>
         </div>
+
+        <div class="calc-row">
+          <div style="flex:1">
+            <label id="deliveryLabel" style="margin-bottom:2px;">نوع دریافت/تحویل</label>
+            <select id="deliverySelect"></select>
+          </div>
+        </div>
+
+        <p class="calc-note" data-i18n="calc_note">نرخ نمایش‌داده‌شده مرجع و تقریبی است؛ نرخ نهایی هنگام تماس با ما اعلام می‌شود.</p>
+        <a class="calc-cta" id="calcCta" href="https://wa.me/905525289101" target="_blank" rel="noopener" data-i18n="calc_cta">ادامه تبدیل در واتس‌اپ</a>
       </div>
 
-      <p class="calc-note" data-i18n="calc_note">نرخ نمایش‌داده‌شده مرجع و تقریبی است؛ نرخ نهایی هنگام تماس با ما اعلام می‌شود.</p>
-      <a class="calc-cta" id="calcCta" href="https://wa.me/905525289101" target="_blank" rel="noopener" data-i18n="calc_cta">ادامه تبدیل در واتس‌اپ</a>
+      <!-- ویجت TGJU که شیک و هماهنگ در زیر ماشین حساب قرار گرفته است -->
+      <div class="tgju-wrapper">
+        <tgju
+            type="market-overview"
+            items="137225,137207,137221,137222,137218"
+            columns="dot"
+            token="webservice"
+        ></tgju>
+      </div>
     </div>
   </section>
 
@@ -626,7 +624,7 @@
 
   <section id="faq">
     <div class="section-head">
-      <span class="eyebrow" data-i18n="faq_eyebrow">اطلاعات</span>
+      <span class="eyebrow" data-i18n="faq_eyebrow">اطلاوات</span>
       <h2 data-i18n="faq_title">سوالات متداول</h2>
     </div>
     <div class="faq-container">
