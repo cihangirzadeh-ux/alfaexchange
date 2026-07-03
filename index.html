@@ -294,7 +294,7 @@
     padding:13px; border-radius:12px;
   }
 
-  /* TGJU SIDE WIDGET STYLING - FIXED FOR ALIGNMENT */
+  /* TGJU SIDE WIDGET STYLING - DARK THEME FIXES FOR READABILITY */
   .tgju-wrapper {
     background: linear-gradient(160deg, var(--bg-panel), var(--bg-panel-2));
     border: 1px solid var(--line);
@@ -305,12 +305,23 @@
     overflow: hidden;
     display: block;
   }
-  /* مهار کردن طول و ساختار داخلی ابزارک برای جلوگیری از فضاهای خالی اضافه */
   .tgju-wrapper tgju, .tgju-wrapper iframe {
     width: 100% !important;
-    max-height: 320px !important; 
     border: none !important;
     display: block !important;
+  }
+
+  /* تزریق استایل‌های اجباری برای مشکی و شفاف کردن کدهای ابزارک تریدینگ ویو/TGJU و خوانایی متن‌ها */
+  .tgju-wrapper, .tgju-wrapper * {
+    background-color: transparent !important;
+    color: var(--text-primary) !important;
+  }
+  .tgju-wrapper a, .tgju-wrapper span, .tgju-wrapper div, .tgju-wrapper td, .tgju-wrapper th {
+    color: var(--text-primary) !important;
+  }
+  .tgju-wrapper .tgju-copyright, .tgju-wrapper .tgju-footer {
+    color: var(--text-muted) !important;
+    border-top: 1px solid var(--line) !important;
   }
 
   /* SOCIAL PROOF STATS */
