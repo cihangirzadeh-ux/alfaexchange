@@ -141,7 +141,7 @@
     display:grid;
     grid-template-columns:1.1fr 0.9fr;
     gap:48px;
-    align-items:start; /* تغییر به حالت تراز از بالا برای هماهنگی ماشین حساب */
+    align-items:start;
   }
   .eyebrow{
     display:inline-block;
@@ -188,6 +188,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    width: 100%;
   }
   .calc-card{
     background:linear-gradient(160deg, var(--bg-panel), var(--bg-panel-2));
@@ -195,6 +196,7 @@
     border-radius:20px;
     padding:22px;
     box-shadow:0 0 60px rgba(31,180,136,0.06);
+    width: 100%;
   }
   .calc-head{
     display:flex; align-items:center; justify-content:space-between;
@@ -292,14 +294,23 @@
     padding:13px; border-radius:12px;
   }
 
-  /* TGJU SIDE WIDGET STYLING */
+  /* TGJU SIDE WIDGET STYLING - FIXED FOR ALIGNMENT */
   .tgju-wrapper {
-    background: var(--bg-panel);
+    background: linear-gradient(160deg, var(--bg-panel), var(--bg-panel-2));
     border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 10px;
+    border-radius: 20px;
+    padding: 16px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    width: 100%;
     overflow: hidden;
+    display: block;
+  }
+  /* مهار کردن طول و ساختار داخلی ابزارک برای جلوگیری از فضاهای خالی اضافه */
+  .tgju-wrapper tgju, .tgju-wrapper iframe {
+    width: 100% !important;
+    max-height: 320px !important; 
+    border: none !important;
+    display: block !important;
   }
 
   /* SOCIAL PROOF STATS */
@@ -503,7 +514,6 @@
       </div>
     </div>
 
-    <!-- قرارگیری هر دو بخش ماشین حساب و قیمت‌ها در یک ستون عمودی -->
     <div class="calc-container">
       <div class="calc-card" id="calc">
         <div class="calc-head">
@@ -542,7 +552,6 @@
         <a class="calc-cta" id="calcCta" href="https://wa.me/905525289101" target="_blank" rel="noopener" data-i18n="calc_cta">ادامه تبدیل در واتس‌اپ</a>
       </div>
 
-      <!-- ویجت TGJU که شیک و هماهنگ در زیر ماشین حساب قرار گرفته است -->
       <div class="tgju-wrapper">
         <tgju
             type="market-overview"
@@ -624,7 +633,7 @@
 
   <section id="faq">
     <div class="section-head">
-      <span class="eyebrow" data-i18n="faq_eyebrow">اطلاوات</span>
+      <span class="eyebrow" data-i18n="faq_eyebrow">اطلاعات</span>
       <h2 data-i18n="faq_title">سوالات متداول</h2>
     </div>
     <div class="faq-container">
@@ -662,7 +671,6 @@
   <p data-i18n="footer_text">صرافی آلفا — تبدیل ارز دیجیتال</p>
 </footer>
 
-<!-- اسکریپت ابزارک قیمت لحظه‌ای TGJU -->
 <script src="https://api.tgju.org/v1/widget/v2" defer></script>
 
 <script>
@@ -725,7 +733,7 @@ const translations = {
     a1: 'حواله‌های لیر و تتر معمولاً بین ۱۵ الی ۶۰ دقیقه تسویه می‌شوند. حواله‌های بین‌المللی مانند سوئیفت وابسته به سیستم بانکی مقصد بین ۱ الی ۳ روز کاری زمان خواهند برد.',
     q2: 'آیا برای انجام تراکنش نیاز به احراز هویت است؟',
     a2: 'بله، جهت حفظ امنیت مالی طرفین و پیروی از قوانین ضد پولشویی، برای مبالغ و تراکنش‌های اول، تایید هویت اولیه الزامی است.',
-    q3: 'چگونه می‌توانم از نرخ دقیق و نهایی مطلع شوم؟',
+    q3: 'چگونه می‌توانم از نرخ دقیق و نهایی مطلع شوم？',
     a3: 'کافیست مبلغ مورد نظر خود را در ماشین‌حساب بالا وارد کرده و دکمه ادامه در واتس‌اپ را بزنید تا نرخ لحظه‌ای بازار برای شما فیکس و ارسال شود.',
     floating_wa_text: 'مشاوره سریع در واتس‌اپ'
   },
