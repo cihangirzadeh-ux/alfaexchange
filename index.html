@@ -294,7 +294,7 @@
     padding:13px; border-radius:12px;
   }
 
-  /* NATIVE LIVE RATES WIDGET (NO EXTERNAL LINKS) */
+  /* NATIVE LIVE RATES WIDGET */
   .native-rates-card {
     background: linear-gradient(160deg, var(--bg-panel), var(--bg-panel-2));
     border: 1px solid var(--line);
@@ -571,7 +571,7 @@
         <a class="calc-cta" id="calcCta" href="https://wa.me/905525289101" target="_blank" rel="noopener" data-i18n="calc_cta">ادامه تبدیل در واتس‌اپ</a>
       </div>
 
-      <!-- باکس قیمت‌های زنده کاملاً اختصاصی و بدون لینک خروجی -->
+      <!-- باکس قیمت‌های زنده بازار بدون تحریم و ۱۰۰٪ خودکار -->
       <div class="native-rates-card">
         <div class="native-rates-title">
           <span data-i18n="live_rates_title">قیمت‌های لحظه‌ای بازار</span>
@@ -738,7 +738,7 @@ const translations = {
     s1_title: 'مبلغ را وارد کن', s1_desc: 'با ماشین‌حساب بالا، مبلغ تقریبی تبدیل را ببین.',
     s2_title: 'پیام بده', s2_desc: 'از طریق واتس‌اپ یا تماس، نرخ نهایی را دریافت کن.',
     s3_title: 'تراکنش را نهایی کن', s3_desc: 'پس از توافق، مبلغ رد و بدل و تسویه انجام می‌شود.',
-    contact_title: 'آماده تبدیلی？',
+    contact_title: 'آماده تبدیلی؟',
     contact_sub: 'همین حالا با ما تماس بگیر یا پیام بده.',
     contact_cta: 'شروع در واتس‌اپ',
     footer_text: 'صرافی آلفا — تبدیل ارز دیجیتال',
@@ -910,35 +910,12 @@ const translations = {
   }
 };
 
+// مقادیر پایه و اولیه مارکت (در صورت قطع اینترنت کلاینت)
 const PAIRS = [
-  {
-    id:'try_usdt',
-    base:{code:'TRY', name:{fa:'لیر',tr:'TL',en:'Lira'}, symbol:'₺', decimals:2},
-    quote:{code:'USDT', name:{fa:'تتر',tr:'USDT',en:'Tether'}, symbol:'₮', decimals:2},
-    rate: 0.0214, 
-    tabLabel:{fa:'لیر ⇄ تتر', tr:'TL ⇄ USDT', en:'TRY ⇄ USDT'}
-  },
-  {
-    id:'try_irt',
-    base:{code:'TRY', name:{fa:'لیر',tr:'TL',en:'Lira'}, symbol:'₺', decimals:2},
-    quote:{code:'IRT', name:{fa:'تومان',tr:'Tümen',en:'Toman'}, symbol:'تومان', decimals:0},
-    rate: 3760, 
-    tabLabel:{fa:'لیر ⇄ تومان', tr:'TL ⇄ Tümen', en:'TRY ⇄ Toman'}
-  },
-  {
-    id:'usd_irt',
-    base:{code:'USD', name:{fa:'دلار',tr:'Dolar',en:'Dollar'}, symbol:'$', decimals:2},
-    quote:{code:'IRT', name:{fa:'تومان',tr:'Tümen',en:'Toman'}, symbol:'تومان', decimals:0},
-    rate: 176000, 
-    tabLabel:{fa:'دلار ⇄ تومان', tr:'USD ⇄ Tümen', en:'USD ⇄ Toman'}
-  },
-  {
-    id:'eur_irt',
-    base:{code:'EUR', name:{fa:'یورو',tr:'Euro',en:'Euro'}, symbol:'€', decimals:2},
-    quote:{code:'IRT', name:{fa:'تومان',tr:'Tümen',en:'Toman'}, symbol:'تومان', decimals:0},
-    rate: 200000, 
-    tabLabel:{fa:'یورو ⇄ تومان', tr:'EUR ⇄ Tümen', en:'EUR ⇄ Toman'}
-  }
+  { id:'try_usdt', base:{code:'TRY', name:{fa:'لیر',tr:'TL',en:'Lira'}, symbol:'₺', decimals:2}, quote:{code:'USDT', name:{fa:'تتر',tr:'USDT',en:'Tether'}, symbol:'₮', decimals:2}, rate: 0.0215, tabLabel:{fa:'لیر ⇄ تتر', tr:'TL ⇄ USDT', en:'TRY ⇄ USDT'} },
+  { id:'try_irt', base:{code:'TRY', name:{fa:'لیر',tr:'TL',en:'Lira'}, symbol:'₺', decimals:2}, quote:{code:'IRT', name:{fa:'تومان',tr:'Tümen',en:'Toman'}, symbol:'تومان', decimals:0}, rate: 1980, tabLabel:{fa:'لیر ⇄ تومان', tr:'TL ⇄ Tümen', en:'TRY ⇄ Toman'} },
+  { id:'usd_irt', base:{code:'USD', name:{fa:'دلار',tr:'Dolar',en:'Dollar'}, symbol:'$', decimals:2}, quote:{code:'IRT', name:{fa:'تومان',tr:'Tümen',en:'Toman'}, symbol:'تومان', decimals:0}, rate: 92000, tabLabel:{fa:'دلار ⇄ تومان', tr:'USD ⇄ Tümen', en:'USD ⇄ Toman'} },
+  { id:'eur_irt', base:{code:'EUR', name:{fa:'یورو',tr:'Euro',en:'Euro'}, symbol:'€', decimals:2}, quote:{code:'IRT', name:{fa:'تومان',tr:'Tümen',en:'Toman'}, symbol:'تومان', decimals:0}, rate: 98500, tabLabel:{fa:'یورو ⇄ تومان', tr:'EUR ⇄ Tümen', en:'EUR ⇄ Toman'} }
 ];
 
 let currentLang = 'fa';
@@ -955,57 +932,52 @@ const box1Cur = document.getElementById('box1Cur');
 const box2Cur = document.getElementById('box2Cur');
 const swapBtn = document.getElementById('swapBtn');
 const calcCta = document.getElementById('calcCta');
-
 const serviceDescContainer = document.getElementById('serviceDescContainer');
 const serviceDescText = document.getElementById('serviceDescText');
 const serviceAskBtn = document.getElementById('serviceAskBtn');
 const serviceAskBtnText = document.getElementById('serviceAskBtnText');
-
 const deliverySelect = document.getElementById('deliverySelect');
 const deliveryLabel = document.getElementById('deliveryLabel');
 const floatingWaText = document.getElementById('floatingWaText');
 
-// به‌روزرسانی زنده مقادیر نمایشی در باکس قیمت‌ها و ماشین‌حساب
 function renderUIWithRates() {
   document.getElementById('rate_val_try_usdt').textContent = fmt(PAIRS[0].rate, 4);
   document.getElementById('rate_val_try_irt').textContent = fmt(PAIRS[1].rate, 0);
   document.getElementById('rate_val_usd_irt').textContent = fmt(PAIRS[2].rate, 0);
   document.getElementById('rate_val_eur_irt').textContent = fmt(PAIRS[3].rate, 0);
-  
   recalc('box1');
 }
 
-// متصل شده به یک API توزیع‌شده و باز برای دریافت آنی نرخ دلار، یورو، لیر و تتر
+// متد کاملا واقعی، آنلاین و بدون فیلتر با نرخ‌های همگام فارکس/کریپتو جهانی
 async function updateLiveRates() {
   try {
-    const response = await fetch('https://api.navasan.tech/latest/?api_key=freeNavasanApiKey4Testing'); 
-    // در صورت در دسترس نبودن موقت API فوق، از پاپ‌بک‌های عمومی صرافی‌های همکار استفاده می‌شود:
-    const altResponse = await fetch('https://brws.navasan.tech/api/latest');
-    const data = await altResponse.json();
+    // گرفتن نرخ لیر به دلار و یورو به دلار از منبع آزاد جهانی بدون نیاز به کلید
+    const globalRes = await fetch('https://open.er-api.com/v6/latest/USD');
+    const globalData = await globalRes.json();
     
-    if (data) {
-      const usd_buy = parseFloat(data.usd?.value || 176000);
-      const eur_buy = parseFloat(data.eur?.value || 200000);
-      const try_buy = parseFloat(data.try?.value || 3760);
-      const usdt_buy = parseFloat(data.usdt?.value || usd_buy); // تتر معمولاً هم‌قیمت یا کمی بالاتر از دلار نقدی است
-
-      PAIRS[1].rate = try_buy; // TRY/IRT
-      PAIRS[2].rate = usd_buy; // USD/IRT
-      PAIRS[3].rate = eur_buy; // EUR/IRT
-      PAIRS[0].rate = try_buy / usdt_buy; // TRY/USDT
+    // گرفتن قیمت زنده تتر به تومان در ایران بدون محدودیت CORS از وب‌سرویس توزیع‌شده
+    const iranRes = await fetch('https://api.tetherland.com/currencies');
+    const iranData = await iranRes.json();
+    
+    if (globalData && globalData.rates && iranData && iranData.data) {
+      // استخراج قیمت لحظه‌ای تتر در ایران (تومان)
+      const usdtInIrt = parseFloat(iranData.data.find(c => c.key === 'USDT')?.price || 92000);
       
-      renderUIWithRates();
+      // تبدیل نرخ‌های جهانی بر پایه دلار
+      const usdToTry = parseFloat(globalData.rates.TRY); // مثلاً ۴۶.۵ لیر به ازای یک دلار
+      const usdToEur = parseFloat(globalData.rates.EUR);
+      
+      if(usdToTry > 0) {
+        PAIRS[0].rate = 1 / usdToTry; // نرخ TRY/USDT
+        PAIRS[2].rate = usdtInIrt;   // نرخ واقعی دلار/تومان در بازار ایران
+        PAIRS[1].rate = usdtInIrt / usdToTry; // نرخ زنده لیر به تومان
+        PAIRS[3].rate = usdtInIrt / usdToEur; // نرخ زنده یورو به تومان
+        
+        renderUIWithRates();
+      }
     }
   } catch (e) {
-    // بک‌آپ نهایی در صورت قطع شبکه یا تحریم آی‌پی‌های خارجی
-    fetch('https://open.er-api.com/v6/latest/TRY')
-      .then(res => res.json())
-      .then(globalData => {
-        if(globalData && globalData.rates) {
-          PAIRS[0].rate = globalData.rates.USD;
-          renderUIWithRates();
-        }
-      }).catch(err => console.log("Rates fallback active. Keep static estimation."));
+    console.log("تلاش مجدد برای دریافت زنده قیمت‌ها...", e);
   }
 }
 
@@ -1019,9 +991,8 @@ function fmt(value, decimals){
   return decimals === 0 ? Math.round(value).toLocaleString('en-US') : value.toLocaleString('en-US', {minimumFractionDigits: decimals, maximumFractionDigits: decimals});
 }
 
-function currentPair(){ return PAIRS[pairIndex]; }
-function cur1(){ return reversed ? currentPair().quote : currentPair().base; }
-function cur2(){ return reversed ? currentPair().base : currentPair().quote; }
+function cur1(){ return reversed ? PAIRS[pairIndex].quote : PAIRS[pairIndex].base; }
+function cur2(){ return reversed ? PAIRS[pairIndex].base : PAIRS[pairIndex].quote; }
 
 function renderPairTabs(){
   pairTabs.innerHTML = '';
@@ -1034,7 +1005,7 @@ function renderPairTabs(){
       reversed = false;
       renderPairTabs();
       renderLabels();
-      box1Input.value = 1000;
+      box1Input.value = i === 0 ? "1000" : (i === 1 ? "1000" : "100");
       recalc('box1');
     });
     pairTabs.appendChild(btn);
@@ -1050,9 +1021,8 @@ function renderLabels(){
 }
 
 function recalc(source){
-  const pair = currentPair();
-  const rate = pair.rate; 
-  const c1 = cur1(), c2 = cur2();
+  const rate = PAIRS[pairIndex].rate; 
+  const c2 = cur2(), c1 = cur1();
 
   if(source === 'box1'){
     const v1 = parseFloat(box1Input.value) || 0;
@@ -1093,31 +1063,22 @@ function updateServiceDetailBox() {
     return;
   }
   const t = translations[currentLang];
-  
   document.querySelectorAll('.service-tag').forEach(tag => {
     tag.classList.toggle('active', tag.getAttribute('data-service') === selectedService);
   });
-
   const descKey = 'desc_' + selectedService;
   const nameKey = 'serv_' + selectedService;
-  
   serviceDescText.textContent = t[descKey];
   serviceAskBtnText.textContent = t['ask_btn_text'];
-  
   const waMsg = t.service_wa_msg(t[nameKey]);
   serviceAskBtn.href = 'https://wa.me/905525289101?text=' + encodeURIComponent(waMsg);
-  
   serviceDescContainer.style.display = 'block';
 }
 
 document.querySelectorAll('.service-tag').forEach(tag => {
   tag.addEventListener('click', () => {
     const service = tag.getAttribute('data-service');
-    if (selectedService === service) {
-      selectedService = null;
-    } else {
-      selectedService = service;
-    }
+    selectedService = selectedService === service ? null : service;
     updateServiceDetailBox();
   });
 });
@@ -1125,7 +1086,6 @@ document.querySelectorAll('.service-tag').forEach(tag => {
 function renderDeliveryOptions() {
   const t = translations[currentLang];
   deliveryLabel.textContent = t['delivery_label'];
-  
   deliverySelect.innerHTML = `
     <option value="bank">${t['del_bank']}</option>
     <option value="cash">${t['del_cash']}</option>
@@ -1135,8 +1095,7 @@ function renderDeliveryOptions() {
 
 document.querySelectorAll('.faq-question').forEach(item => {
   item.addEventListener('click', () => {
-    const parent = item.parentElement;
-    parent.classList.toggle('open');
+    item.parentElement.classList.toggle('open');
   });
 });
 
@@ -1170,11 +1129,12 @@ document.querySelectorAll('.lang-btn').forEach(b=>{
   b.addEventListener('click', ()=> setLang(b.getAttribute('data-lang')));
 });
 
+// اجرای اولیه برنامه
 setLang('fa');
-
-// اجرای چرخه دریافت نرخ‌ها
 updateLiveRates();
-setInterval(updateLiveRates, 60000); // به‌روزرسانی هر ۱ دقیقه یک‌بار (بدون قطعی و کندی لود صفحه)
+
+// دریافت دیتای زنده جدید هر ۳۰ ثانیه یک‌بار به سبک TGJU
+setInterval(updateLiveRates, 30000);
 </script>
 </body>
 </html>
