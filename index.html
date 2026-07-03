@@ -294,9 +294,15 @@
     padding:13px; border-radius:12px;
   }
 
-  /* TGJU SIDE WIDGET STYLING - DARK THEME FIXES FOR READABILITY */
+  /* TGJU TWO COLUMN WIDGET STYLING */
+  .tgju-container-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    width: 100%;
+  }
   .tgju-wrapper {
-    background: linear-gradient(160deg, var(--bg-panel), var(--bg-panel-2));
+    background: linear-gradient(160deg, var(--bg-panel), var(--bg-panel-2)) !important;
     border: 1px solid var(--line);
     border-radius: 20px;
     padding: 16px;
@@ -310,8 +316,6 @@
     border: none !important;
     display: block !important;
   }
-
-  /* تزریق استایل‌های اجباری برای مشکی و شفاف کردن کدهای ابزارک تریدینگ ویو/TGJU و خوانایی متن‌ها */
   .tgju-wrapper, .tgju-wrapper * {
     background-color: transparent !important;
     color: var(--text-primary) !important;
@@ -474,6 +478,7 @@
 
   @media (max-width:820px){
     .hero{ grid-template-columns:1fr; padding-block:24px; }
+    .tgju-container-grid { grid-template-columns: 1fr; }
     .features{ grid-template-columns:repeat(2,1fr); }
     .steps{ grid-template-columns:1fr; }
     .top-services { gap: 8px; }
@@ -563,13 +568,23 @@
         <a class="calc-cta" id="calcCta" href="https://wa.me/905525289101" target="_blank" rel="noopener" data-i18n="calc_cta">ادامه تبدیل در واتس‌اپ</a>
       </div>
 
-      <div class="tgju-wrapper">
-        <tgju
-            type="market-overview"
-            items="137225,137207,137221,137222,137218"
-            columns="dot"
-            token="webservice"
-        ></tgju>
+      <div class="tgju-container-grid">
+        <div class="tgju-wrapper">
+          <tgju
+              type="market-overview"
+              items="137225,137207,137221,137222,137218"
+              columns="dot"
+              token="webservice"
+          ></tgju>
+        </div>
+        <div class="tgju-wrapper">
+          <tgju
+              type="market-overview"
+              items="398097,398096,535605,398115,398102"
+              columns="dot"
+              token="webservice"
+          ></tgju>
+        </div>
       </div>
     </div>
   </section>
@@ -744,7 +759,7 @@ const translations = {
     a1: 'حواله‌های لیر و تتر معمولاً بین ۱۵ الی ۶۰ دقیقه تسویه می‌شوند. حواله‌های بین‌المللی مانند سوئیفت وابسته به سیستم بانکی مقصد بین ۱ الی ۳ روز کاری زمان خواهند برد.',
     q2: 'آیا برای انجام تراکنش نیاز به احراز هویت است؟',
     a2: 'بله، جهت حفظ امنیت مالی طرفین و پیروی از قوانین ضد پولشویی، برای مبالغ و تراکنش‌های اول، تایید هویت اولیه الزامی است.',
-    q3: 'چگونه می‌توانم از نرخ دقیق و نهایی مطلع شوم？',
+    q3: 'چگونه می‌توانم از نرخ دقیق و نهایی مطلع شوم؟',
     a3: 'کافیست مبلغ مورد نظر خود را در ماشین‌حساب بالا وارد کرده و دکمه ادامه در واتس‌اپ را بزنید تا نرخ لحظه‌ای بازار برای شما فیکس و ارسال شود.',
     floating_wa_text: 'مشاوره سریع در واتس‌اپ'
   },
@@ -970,7 +985,7 @@ function renderPairTabs(){
       reversed = false;
       renderPairTabs();
       renderLabels();
-      box1Input.value = 1000;
+      box1Input.value = p.id.endsWith('_irt') && p.id !== 'try_irt' ? 100 : 1000;
       recalc('box1');
     });
     pairTabs.appendChild(btn);
@@ -985,18 +1000,31 @@ function renderLabels(){
   box2Cur.textContent = c2.symbol;
 }
 
+// تابع بهینه‌شده برای جلوگیری از تداخل کاما و محاسبات جفت‌ارزهای معکوس و تومانی
 function recalc(source){
   const pair = currentPair();
   const rate = pair.rate; 
   const c1 = cur1(), c2 = cur2();
+  
+  const isDirectRate = pair.id.endsWith('_irt');
 
   if(source === 'box1'){
-    const v1 = parseFloat(box1Input.value) || 0;
-    const v2 = reversed ? (v1 / rate) : (v1 * rate); 
+    const v1 = parseFloat(box1Input.value.toString().replace(/,/g, '')) || 0;
+    let v2;
+    if(isDirectRate) {
+      v2 = reversed ? (v1 / rate) : (v1 * rate);
+    } else {
+      v2 = reversed ? (v1 / rate) : (v1 * rate);
+    }
     box2Input.value = fmt(v2, c2.decimals);
   } else {
-    const v2 = parseFloat(box2Input.value) || 0;
-    const v1 = reversed ? (v2 * rate) : (v2 / rate);
+    const v2 = parseFloat(box2Input.value.toString().replace(/,/g, '')) || 0;
+    let v1;
+    if(isDirectRate) {
+      v1 = reversed ? (v2 * rate) : (v2 / rate);
+    } else {
+      v1 = reversed ? (v2 * rate) : (v2 / rate);
+    }
     box1Input.value = fmt(v1, c1.decimals);
   }
   updateCtaLink();
